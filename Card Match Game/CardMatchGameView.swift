@@ -12,16 +12,15 @@ struct CardMatchGameView: View {
     // @ObservedObject -> indicates that var is observable and need to redraw on objectWillChange.send()
     @ObservedObject var gameType: EmojiCardMatchGame
     var body: some View {
-        HStack {
-            ForEach(gameType.cards) { card in
-                CardView(card: card).onTapGesture {
-                    self.gameType.choose(card: card)
-                }
+        Grid(items: gameType.cards) { card in
+            CardView(card: card).onTapGesture {
+                self.gameType.choose(card: card)
             }
+            .padding(5)
         }
             .padding()
             .foregroundColor(Color.orange)
-        }
+    }
 }
 
 struct CardView: View {
@@ -39,7 +38,9 @@ struct CardView: View {
                 RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
                 Text(card.content)
             } else {
-                RoundedRectangle(cornerRadius: cornerRadius).fill()
+                if !card.isMatched {
+                    RoundedRectangle(cornerRadius: cornerRadius).fill()
+                }
             }
         }
         .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)

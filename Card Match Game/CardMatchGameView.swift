@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CardMatchGameView.swift
 //  Card Match
 //
 //  Created by Eric Liu on 2020-06-02.
@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct CardMatchGameView: View {
-    var gameType: EmojiCardMatchGame
+    // @ObservedObject -> indicates that var is observable and need to redraw on objectWillChange.send()
+    @ObservedObject var gameType: EmojiCardMatchGame
     var body: some View {
         HStack {
             ForEach(gameType.cards) { card in
@@ -20,23 +21,36 @@ struct CardMatchGameView: View {
         }
             .padding()
             .foregroundColor(Color.orange)
-            .font(gameType.cards.count < 5 ? Font.largeTitle : Font.title)
         }
 }
 
 struct CardView: View {
     var card: CardMatchGame<String>.Card
     var body: some View {
+        GeometryReader { geometry in
+            self.body(for: geometry.size)
+        }
+    }
+    
+    func body(for size: CGSize) -> some View {
         ZStack {
             if card.isFaceUp {
-                RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
-                RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3).foregroundColor(Color.orange).padding() // 10 point font
-                Text(card.content).padding().font(Font.largeTitle)
+                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
+                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+                Text(card.content)
             } else {
-                RoundedRectangle(cornerRadius: 10.0).fill()
+                RoundedRectangle(cornerRadius: cornerRadius).fill()
             }
         }
         .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)
+        .font(Font.system(size: fontSize(for: size)))
+    }
+    
+    // MARK: - Drawing Constants
+    let cornerRadius: CGFloat = 10.0
+    let edgeLineWidth: CGFloat = 3
+    func fontSize(for size: CGSize) -> CGFloat {
+        min(size.width, size.height) * 0.75
     }
 }
 

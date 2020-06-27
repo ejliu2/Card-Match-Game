@@ -43,33 +43,30 @@ struct CardView: View {
         }
     }
     
+    @ViewBuilder
     private func body(for size: CGSize) -> some View {
-        ZStack {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth).foregroundColor(gameType.currentTheme.textColor)
-                Text(card.content)
-            } else {
-                if !card.isMatched {
-                    RoundedRectangle(cornerRadius: cornerRadius).fill(LinearGradient(gradient: gameType.currentTheme.themeColour, startPoint: .top, endPoint: .bottom))
-                }
+        if card.isFaceUp || !card.isMatched {
+            ZStack {
+                Pie(startAngle: Angle.degrees(0-90), endAngle: Angle.degrees(110-90), clockwise: true).padding(5).opacity(0.4).foregroundColor(gameType.currentTheme.textColor)
+                Text(card.content).font(Font.system(size: fontSize(for: size)))
             }
+            .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)
+            .cardify(isFaceUp: card.isFaceUp, colour: LinearGradient(gradient: gameType.currentTheme.themeColour, startPoint: .top, endPoint: .bottom))
         }
-        .font(Font.system(size: fontSize(for: size)))
-        .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)
     }
     
     // MARK: - Drawing Constants
-    private let cornerRadius: CGFloat = 10.0
-    private let edgeLineWidth: CGFloat = 3
+
     private func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * 0.65
+        min(size.width, size.height) * 0.55
     }
 }
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        CardMatchGameView(gameType: EmojiCardMatchGame())
+        let game = EmojiCardMatchGame()
+        game.choose(card: game.cards[0])
+        return CardMatchGameView(gameType: game)
     }
 }

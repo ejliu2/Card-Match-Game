@@ -12,14 +12,14 @@ class EmojiCardMatchGame: ObservableObject {
     // We can also use private(set). Set prevents changes by other classes/objects but allows this class to make changes
     // @Published -> wrapper, everytime this var changes, then published called objectWillChange.send()
     @Published private var game: CardMatchGame<String>
-    var currentTheme: Theme
+    private(set) var currentTheme: Theme
     
     init() {
         currentTheme = EmojiCardMatchGame.pickTheme()
         game = EmojiCardMatchGame.createCardMatchGame(withTheme: currentTheme)
     }
     
-    static func pickTheme() -> Theme {
+    private static func pickTheme() -> Theme {
         func randomNumberOfPairs() -> Int { return Int.random(in: 2...6) }
         let availableThemes: [Theme] = [
             Theme(id: 1, themeName: "Halloween", textColor: Color.orange, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.orange, Color.black]), emojis: ["👻", "🎃", "🕷", "🕸", "💀", "😈", "😺", "🧛🏻", "🧙‍♀️", "🧟", "🦇", "🌙"]),
@@ -33,7 +33,7 @@ class EmojiCardMatchGame: ObservableObject {
         return availableThemes[pickRandomTheme]
     }
     
-    static func createCardMatchGame(withTheme theme: Theme) -> CardMatchGame<String> {
+    private static func createCardMatchGame(withTheme theme: Theme) -> CardMatchGame<String> {
         let randomNumberOfPairs = theme.numberOfCards ?? Int.random(in: 2...5)
         let emojis = theme.emojis.shuffled()
         return CardMatchGame<String>(numberOfPairsOfCards: randomNumberOfPairs) { pairIndex in

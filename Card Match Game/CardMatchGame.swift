@@ -9,9 +9,9 @@
 import Foundation
 
 struct CardMatchGame<CardContent> where CardContent: Equatable {
-    var cards: Array<Card>
-    var timeSinceLastChosen: Date?
-    var indexOfTheOneAndOnlyFaceUpCard: Int? {
+    private(set) var cards: Array<Card>
+    private(set) var timeSinceLastChosen: Date?
+    private var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get { cards.indices.filter { cards[$0].isFaceUp }.only }
         set {
             for index in cards.indices {
@@ -19,7 +19,7 @@ struct CardMatchGame<CardContent> where CardContent: Equatable {
             }
         }
     }
-    var score: Double = 0.0
+    private(set) var score: Double = 0.0
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>() // Empty Array of Cards

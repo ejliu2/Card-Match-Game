@@ -6,51 +6,65 @@
 //  Copyright © 2020 Eric Liu. All rights reserved.
 //
 
-import Foundation
+import SwiftUI
 
 class EmojiCardMatchGame: ObservableObject {
     // We can also use private(set). Set prevents changes by other classes/objects but allows this class to make changes
     // @Published -> wrapper, everytime this var changes, then published called objectWillChange.send()
-    @Published private var game: CardMatchGame<String> = EmojiCardMatchGame.createCardMatchGame()
+    @Published private var game: CardMatchGame<String>
+    var currentTheme: Theme
     
-    static func createCardMatchGame() -> CardMatchGame<String> {
-        let randomNumberOfPairs = Int.random(in: 2...5)
-        let randomTheme = Int.random(in: 0...5)
-        let halloweenEmojis = ["👻", "🎃", "🕷", "🕸", "💀", "😈", "😺", "🧛🏻", "🧙‍♀️", "🧟", "🦇", "🌙"]
-        let animalEmojis = ["🐶", "🐱", "🐭", "🦊", "🐷", "🐹", "🐵", "🐨", "🐻", "🐮", "🐸", "🐼"]
-        let smileyEmojis = ["😀", "😅", "😇", "😍", "😛", "😎", "🧐", "😭", "😡", "😱", "🤢", "👿"]
-        let fruitEmojis = ["🍎", "🍐", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🍍", "🥥", "🥝", "🥭"]
-        let foodEmojis = ["🧀", "🥚", "🍔", "🍟", "🧇", "🥨", "🌮", "🍣", "🍲", "🍙", "🥗", "🍕"]
-        let sportEmojis = ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏐", "🥏", "🎱", "🏓", "🏸", "🏒", "🥍"]
-        
+    init() {
+        currentTheme = EmojiCardMatchGame.pickTheme()
+        game = EmojiCardMatchGame.createCardMatchGame(withTheme: currentTheme)
+    }
+    
+    static func pickTheme() -> Theme {
+        func randomNumberOfPairs() -> Int { return Int.random(in: 2...6) }
         let availableThemes: [Theme] = [
-        Theme(themeName: "halloween", numberOfCards: randomNumberOfPairs, themeColour: "Orange", emojis: halloweenEmojis),
-        Theme(themeName: "animal", numberOfCards: randomNumberOfPairs, themeColour: "Yellow", emojis: animalEmojis),
-        Theme(themeName: "smiley", numberOfCards: randomNumberOfPairs, themeColour: "Black", emojis: smileyEmojis),
-        Theme(themeName: "fruit", numberOfCards: randomNumberOfPairs, themeColour: "Green", emojis: fruitEmojis),
-        Theme(themeName: "food", numberOfCards: randomNumberOfPairs, themeColour: "Red", emojis: foodEmojis),
-        Theme(themeName: "sport", numberOfCards: randomNumberOfPairs, themeColour: "Blue", emojis: sportEmojis)
+            Theme(id: 1, themeName: "Halloween", textColor: Color.orange, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.orange, Color.black]), emojis: ["👻", "🎃", "🕷", "🕸", "💀", "😈", "😺", "🧛🏻", "🧙‍♀️", "🧟", "🦇", "🌙"]),
+            Theme(id: 2, themeName: "Animal", textColor: Color.yellow, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.yellow, Color.orange]), emojis: ["🐶", "🐱", "🐭", "🦊", "🐷", "🐹", "🐵", "🐨", "🐻", "🐮", "🐸", "🐼"]),
+            Theme(id: 3, themeName: "Smiley", textColor: Color.purple, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.purple, Color.black]), emojis: ["😀", "😅", "😇", "😍", "😛", "😎", "🧐", "😭", "😡", "😱", "🤢", "👿"]),
+            Theme(id: 4, themeName: "Fruit", textColor: Color.green, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.red, Color.green]), emojis: ["🍎", "🍐", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🍍", "🥥", "🥝", "🥭"]),
+            Theme(id: 5, themeName: "Food", textColor: Color.red, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.red, Color.yellow]), emojis: ["🧀", "🥚", "🍔", "🍟", "🧇", "🥨", "🌮", "🍣", "🍲", "🍙", "🥗", "🍕"]),
+            Theme(id: 6, themeName: "Sport", textColor: Color.blue, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.green, Color.blue]), emojis: ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏐", "🥏", "🎱", "🏓", "🏸", "🏒", "🥍"])
         ]
-        
+        let pickRandomTheme = Int.random(in: 0..<availableThemes.count)
+        return availableThemes[pickRandomTheme]
+    }
+    
+    static func createCardMatchGame(withTheme theme: Theme) -> CardMatchGame<String> {
+        let randomNumberOfPairs = theme.numberOfCards ?? Int.random(in: 2...5)
+        let emojis = theme.emojis.shuffled()
         return CardMatchGame<String>(numberOfPairsOfCards: randomNumberOfPairs) { pairIndex in
-            return availableThemes[randomTheme].emojis[pairIndex]
+            return emojis[pairIndex]
             // return subsetEmojis[pairIndex]
         }
     }
     
-    // MARK: - Themes
-    struct Theme {
-        var themeName: String
-        var numberOfCards: Int?
-        var themeColour: String
-        var emojis: [String]
+    func newCardMatchGame() -> Void {
+        self.currentTheme = EmojiCardMatchGame.pickTheme()
+        self.game = EmojiCardMatchGame.createCardMatchGame(withTheme: currentTheme)
     }
-
+    
+    // MARK: - Themes
+    struct Theme : Identifiable {
+        let id: Int
+        let themeName: String
+        let textColor: Color
+        let numberOfCards: Int?
+        let themeColour: Gradient
+        let emojis: [String]
+    }
     
     // MARK: - Access to the Model
     
     var cards: Array<CardMatchGame<String>.Card> {
-        return game.cards;
+        return game.cards
+    }
+    
+    var score: Double {
+        return game.score
     }
     
     // MARK: - Intent(s)

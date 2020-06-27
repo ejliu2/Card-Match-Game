@@ -13,17 +13,16 @@ struct CardMatchGameView: View {
     @ObservedObject var gameType: EmojiCardMatchGame
     var body: some View {
         Group {
-            Text("Theme: \(gameType.currentTheme.themeName)").font(Font.largeTitle).foregroundColor(gameType.currentTheme.themeColour)
+            Text("Theme: \(gameType.currentTheme.themeName)").font(Font.largeTitle).foregroundColor(gameType.currentTheme.textColor)
             Text("Current Score: \(gameType.score)").font(Font.title)
             
             Grid(items: gameType.cards) { card in
-                CardView(card: card).onTapGesture {
+                CardView(gameType: self.gameType, card: card).onTapGesture {
                     self.gameType.choose(card: card)
                 }
                 .padding(5)
             }
             .padding()
-            .foregroundColor(gameType.currentTheme.themeColour)
             
             Button(action: {self.gameType.newCardMatchGame()}) {
                 Text("New Game").font(Font.largeTitle)
@@ -33,6 +32,7 @@ struct CardMatchGameView: View {
 }
 
 struct CardView: View {
+    var gameType: EmojiCardMatchGame
     var card: CardMatchGame<String>.Card
     var body: some View {
         GeometryReader { geometry in
@@ -44,11 +44,11 @@ struct CardView: View {
         ZStack {
             if card.isFaceUp {
                 RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth).foregroundColor(gameType.currentTheme.textColor)
                 Text(card.content)
             } else {
                 if !card.isMatched {
-                    RoundedRectangle(cornerRadius: cornerRadius).fill()
+                    RoundedRectangle(cornerRadius: cornerRadius).fill(LinearGradient(gradient: gameType.currentTheme.themeColour, startPoint: .top, endPoint: .bottom))
                 }
             }
         }

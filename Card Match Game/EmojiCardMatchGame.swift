@@ -22,12 +22,12 @@ class EmojiCardMatchGame: ObservableObject {
     static func pickTheme() -> Theme {
         func randomNumberOfPairs() -> Int { return Int.random(in: 2...6) }
         let availableThemes: [Theme] = [
-            Theme(id: 1, themeName: "Halloween", numberOfCards: randomNumberOfPairs(), themeColour: Color.orange, emojis: ["👻", "🎃", "🕷", "🕸", "💀", "😈", "😺", "🧛🏻", "🧙‍♀️", "🧟", "🦇", "🌙"]),
-            Theme(id: 2, themeName: "Animal", numberOfCards: randomNumberOfPairs(), themeColour: Color.yellow, emojis: ["🐶", "🐱", "🐭", "🦊", "🐷", "🐹", "🐵", "🐨", "🐻", "🐮", "🐸", "🐼"]),
-            Theme(id: 3, themeName: "Smiley", numberOfCards: randomNumberOfPairs(), themeColour: Color.black, emojis: ["😀", "😅", "😇", "😍", "😛", "😎", "🧐", "😭", "😡", "😱", "🤢", "👿"]),
-            Theme(id: 4, themeName: "Fruit", numberOfCards: randomNumberOfPairs(), themeColour: Color.green, emojis: ["🍎", "🍐", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🍍", "🥥", "🥝", "🥭"]),
-            Theme(id: 5, themeName: "Food", numberOfCards: randomNumberOfPairs(), themeColour: Color.red, emojis: ["🧀", "🥚", "🍔", "🍟", "🧇", "🥨", "🌮", "🍣", "🍲", "🍙", "🥗", "🍕"]),
-            Theme(id: 6, themeName: "Sport", numberOfCards: randomNumberOfPairs(), themeColour: Color.blue, emojis: ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏐", "🥏", "🎱", "🏓", "🏸", "🏒", "🥍"])
+            Theme(id: 1, themeName: "Halloween", textColor: Color.orange, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.orange, Color.black]), emojis: ["👻", "🎃", "🕷", "🕸", "💀", "😈", "😺", "🧛🏻", "🧙‍♀️", "🧟", "🦇", "🌙"]),
+            Theme(id: 2, themeName: "Animal", textColor: Color.yellow, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.yellow, Color.orange]), emojis: ["🐶", "🐱", "🐭", "🦊", "🐷", "🐹", "🐵", "🐨", "🐻", "🐮", "🐸", "🐼"]),
+            Theme(id: 3, themeName: "Smiley", textColor: Color.purple, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.purple, Color.black]), emojis: ["😀", "😅", "😇", "😍", "😛", "😎", "🧐", "😭", "😡", "😱", "🤢", "👿"]),
+            Theme(id: 4, themeName: "Fruit", textColor: Color.green, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.red, Color.green]), emojis: ["🍎", "🍐", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🍍", "🥥", "🥝", "🥭"]),
+            Theme(id: 5, themeName: "Food", textColor: Color.red, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.red, Color.yellow]), emojis: ["🧀", "🥚", "🍔", "🍟", "🧇", "🥨", "🌮", "🍣", "🍲", "🍙", "🥗", "🍕"]),
+            Theme(id: 6, themeName: "Sport", textColor: Color.blue, numberOfCards: randomNumberOfPairs(), themeColour: Gradient(colors: [Color.green, Color.blue]), emojis: ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏐", "🥏", "🎱", "🏓", "🏸", "🏒", "🥍"])
         ]
         let pickRandomTheme = Int.random(in: 0..<availableThemes.count)
         return availableThemes[pickRandomTheme]
@@ -51,8 +51,9 @@ class EmojiCardMatchGame: ObservableObject {
     struct Theme : Identifiable {
         let id: Int
         let themeName: String
+        let textColor: Color
         let numberOfCards: Int?
-        let themeColour: Color
+        let themeColour: Gradient
         let emojis: [String]
     }
     

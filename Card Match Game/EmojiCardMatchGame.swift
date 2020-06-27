@@ -63,7 +63,7 @@ class EmojiCardMatchGame: ObservableObject {
         return game.cards
     }
     
-    var score: Int {
+    var score: Double {
         return game.score
     }
     

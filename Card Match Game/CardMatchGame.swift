@@ -10,6 +10,7 @@ import Foundation
 
 struct CardMatchGame<CardContent> where CardContent: Equatable {
     var cards: Array<Card>
+    var timeSinceLastChosen: Date?
     var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get { cards.indices.filter { cards[$0].isFaceUp }.only }
         set {
@@ -18,7 +19,7 @@ struct CardMatchGame<CardContent> where CardContent: Equatable {
             }
         }
     }
-    var score: Int = 0
+    var score: Double = 0.0
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>() // Empty Array of Cards
@@ -37,14 +38,14 @@ struct CardMatchGame<CardContent> where CardContent: Equatable {
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
-                    self.score += 2
+                    self.score += max(2.0, (4.0 + timeSinceLastChosen!.timeIntervalSinceNow))
                 }
                 else {
                     if (cards[chosenIndex].seenBefore) {
-                        self.score -= 1
+                        self.score -= 1.0
                     }
                     if (cards[potentialMatchIndex].seenBefore) {
-                        self.score -= 1
+                        self.score -= 1.0
                     }
                     cards[chosenIndex].seenBefore = true
                     cards[potentialMatchIndex].seenBefore = true
@@ -52,6 +53,7 @@ struct CardMatchGame<CardContent> where CardContent: Equatable {
                 self.cards[chosenIndex].isFaceUp = true
             } else {
                 indexOfTheOneAndOnlyFaceUpCard = chosenIndex
+                timeSinceLastChosen = Date()
             }
         }
     }

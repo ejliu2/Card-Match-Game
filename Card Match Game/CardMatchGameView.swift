@@ -14,7 +14,11 @@ struct CardMatchGameView: View {
     var body: some View {
         Group {
             Text("Theme: \(gameType.currentTheme.themeName)").font(Font.largeTitle).foregroundColor(gameType.currentTheme.textColor)
-            Text("Current Score: \(gameType.score)").font(Font.title)
+            //Text("Current Score: \(gameType.score.rounded())").font(Font.title)
+            HStack {
+                Text("Current Score: ").font(Font.largeTitle)
+                Text(String(format: "%.0f", gameType.score.rounded())).font(Font.largeTitle)
+            }
             
             Grid(items: gameType.cards) { card in
                 CardView(gameType: self.gameType, card: card).onTapGesture {
@@ -23,7 +27,6 @@ struct CardMatchGameView: View {
                 .padding(5)
             }
             .padding()
-            
             Button(action: {self.gameType.newCardMatchGame()}) {
                 Text("New Game").font(Font.largeTitle)
             }
@@ -60,7 +63,7 @@ struct CardView: View {
     let cornerRadius: CGFloat = 10.0
     let edgeLineWidth: CGFloat = 3
     func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * 0.7
+        min(size.width, size.height) * 0.65
     }
 }
 

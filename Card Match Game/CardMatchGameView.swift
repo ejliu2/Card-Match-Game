@@ -12,14 +12,23 @@ struct CardMatchGameView: View {
     // @ObservedObject -> indicates that var is observable and need to redraw on objectWillChange.send()
     @ObservedObject var gameType: EmojiCardMatchGame
     var body: some View {
-        Grid(items: gameType.cards) { card in
-            CardView(card: card).onTapGesture {
-                self.gameType.choose(card: card)
+        Group {
+            Text("Theme: \(gameType.currentTheme.themeName)").font(Font.largeTitle).foregroundColor(gameType.currentTheme.themeColour)
+            Text("Current Score: \(gameType.score)").font(Font.title)
+            
+            Grid(items: gameType.cards) { card in
+                CardView(card: card).onTapGesture {
+                    self.gameType.choose(card: card)
+                }
+                .padding(5)
             }
-            .padding(5)
-        }
             .padding()
-            .foregroundColor(Color.orange)
+            .foregroundColor(gameType.currentTheme.themeColour)
+            
+            Button(action: {self.gameType.newCardMatchGame()}) {
+                Text("New Game").font(Font.largeTitle)
+            }
+        }
     }
 }
 
@@ -43,15 +52,15 @@ struct CardView: View {
                 }
             }
         }
-        .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)
         .font(Font.system(size: fontSize(for: size)))
+        .aspectRatio(CGSize(width: 2, height: 3), contentMode: .fit)
     }
     
     // MARK: - Drawing Constants
     let cornerRadius: CGFloat = 10.0
     let edgeLineWidth: CGFloat = 3
     func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * 0.75
+        min(size.width, size.height) * 0.7
     }
 }
 
